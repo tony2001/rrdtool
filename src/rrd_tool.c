@@ -824,9 +824,11 @@ int CreateArgs(
         aLine[len] = 0;
         len--;
     }
+
     /* sikp leading blanks */
     while (*aLine && *aLine <= ' ')
         aLine++;
+
     pargv[0] = pName;
     argc = 1;
     getP = aLine;
@@ -843,19 +845,23 @@ int CreateArgs(
             break;
         case '"':
         case '\'':
-            if (Quote != 0) {
-                if (Quote == *getP)
-                    Quote = 0;
-                else {
-                    *(putP++) = *getP;
-                }
-            } else {
-                if (!inArg) {
-                    pargv[argc++] = putP;
-                    inArg = 1;
-                }
-                Quote = *getP;
-            }
+			if (getP > aLine && *(getP - 1) == '\\') {
+				*(putP-1) = *getP;
+			} else {
+				if (Quote != 0) {
+					if (Quote == *getP)
+						Quote = 0;
+					else {
+						*(putP++) = *getP;
+					}
+				} else {
+					if (!inArg) {
+						pargv[argc++] = putP;
+						inArg = 1;
+					}
+					Quote = *getP;
+				}
+			}
             break;
         default:
             if (!inArg) {
@@ -869,6 +875,7 @@ int CreateArgs(
     }
 
     *putP = '\0';
+
     if (Quote)
         return -1;
     else

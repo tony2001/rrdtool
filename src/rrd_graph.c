@@ -1773,7 +1773,7 @@ int leg_place(
         for (i = 0; i < im->gdes_c; i++) {
             char      prt_fctn; /*special printfunctions */
             if(calc_width){
-                strncpy(saved_legend, im->gdes[i].legend, sizeof saved_legend);
+                rrd_strncpy(saved_legend, im->gdes[i].legend, sizeof saved_legend);
             }
 
             fill_last = fill;
@@ -1939,7 +1939,7 @@ int leg_place(
             }
 
             if(calc_width){
-                strncpy(im->gdes[i].legend, saved_legend, sizeof im->gdes[0].legend);
+                rrd_strncpy(im->gdes[i].legend, saved_legend, sizeof im->gdes[0].legend);
             }
         }
 
@@ -4139,7 +4139,7 @@ rrd_info_t *rrd_graph_v(
         return NULL;
     }
 
-    strncpy(im.graphfile, argv[optind], MAXPATH - 1);
+    rrd_strncpy(im.graphfile, argv[optind], MAXPATH - 1);
     im.graphfile[MAXPATH - 1] = '\0';
 
     if (strcmp(im.graphfile, "-") == 0) {
@@ -4198,7 +4198,7 @@ static void
 rrd_set_font_desc (
     image_desc_t *im,int prop,char *font, double size ){
     if (font){
-        strncpy(im->text_prop[prop].font, font, sizeof(text_prop[prop].font) - 1);
+        rrd_strncpy(im->text_prop[prop].font, font, sizeof(text_prop[prop].font) - 1);
         im->text_prop[prop].font[sizeof(text_prop[prop].font) - 1] = '\0';
         /* if we already got one, drop it first */
         pango_font_description_free(im->text_prop[prop].font_desc);
@@ -4535,7 +4535,7 @@ void rrd_graph_options(
                        scan_ltm,
                        &im->xlab_user.labst,
                        &im->xlab_user.precis, &stroff) == 7 && stroff != 0) {
-                strncpy(im->xlab_form, optarg + stroff,
+                rrd_strncpy(im->xlab_form, optarg + stroff,
                         sizeof(im->xlab_form) - 1);
                 im->xlab_form[sizeof(im->xlab_form) - 1] = '\0';
                 if ((int)
@@ -4594,7 +4594,7 @@ void rrd_graph_options(
             im->dynamic_labels = 1;
             break;         
         case 1010:
-            strncpy(week_fmt,optarg,sizeof week_fmt);
+            rrd_strncpy(week_fmt,optarg,sizeof week_fmt);
             week_fmt[(sizeof week_fmt)-1]='\0';
             break;
         case 1002: /* right y axis */
@@ -4613,7 +4613,7 @@ void rrd_graph_options(
             }
             break;
         case 1003:
-            strncpy(im->second_axis_legend,optarg,150);
+            rrd_strncpy(im->second_axis_legend,optarg,150);
             im->second_axis_legend[150]='\0';
             break;
         case 1004:
@@ -4621,11 +4621,11 @@ void rrd_graph_options(
                 rrd_set_error("use either %le or %lf formats");
                 return;
             }
-            strncpy(im->second_axis_format,optarg,150);
+            rrd_strncpy(im->second_axis_format,optarg,150);
             im->second_axis_format[150]='\0';
             break;
         case 'v':
-            strncpy(im->ylegend, optarg, 150);
+            rrd_strncpy(im->ylegend, optarg, 150);
             im->ylegend[150] = '\0';
             break;
         case 'u':
@@ -4786,7 +4786,7 @@ void rrd_graph_options(
             }
             break;
         case 't':
-            strncpy(im->title, optarg, 150);
+            rrd_strncpy(im->title, optarg, 150);
             im->title[150] = '\0';
             break;
         case 'R':
@@ -4824,7 +4824,7 @@ void rrd_graph_options(
             /* not supported curently */
             break;
         case 'W':
-            strncpy(im->watermark, optarg, 100);
+            rrd_strncpy(im->watermark, optarg, 100);
             im->watermark[99] = '\0';
             break;
         case 'd':

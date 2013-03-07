@@ -127,6 +127,76 @@ int rrd_fetch_fn_libdbi(const char *filename, enum cf_en cf_idx,
 
     const char *cf_to_string (enum cf_en cf);
 
+
+static inline char *rrd_strncpy(char *dest, const char *src, size_t n)
+{
+	const char *end, *c;
+	size_t dest_len;
+	int slash;
+
+	if (!src) {
+		return NULL;
+	}
+
+	c = src;
+	end = src + strlen(src);
+
+	dest_len = 0;
+	slash = 0;
+	while (c <= end && dest_len < n) {
+		if (*c == '\\' && !slash) {
+			slash = 1;
+			c++;
+			continue;
+		}
+
+		if (slash) {
+			switch (*c) {
+				case 'n':
+					dest[dest_len] = '\n';
+					break;
+				case 't':
+					dest[dest_len] = '\t';
+					break;
+				case 'f':
+					dest[dest_len] = '\f';
+					break;
+				case 'r':
+					dest[dest_len] = '\r';
+					break;
+				case '\\':
+					dest[dest_len] = '\\';
+					break;
+				case '\'':
+					dest[dest_len] = '\'';
+					break;
+				case '"':
+					dest[dest_len] = '"';
+					break;
+				default:
+					dest[dest_len] = '\\';
+					if (dest_len < n) {
+						dest_len++;
+						dest[dest_len] = *c;
+					}
+					break;
+			}
+			slash = 0;
+		} else {
+			dest[dest_len] = *c;
+		}
+		dest_len++;
+
+		if (dest_len == n) {
+			break;
+		}
+		c++;
+	}
+
+	dest[dest_len] = 0;
+	return dest;
+}
+
 #endif /* _RRD_TOOL_H */
 
 #ifdef  __cplusplus
